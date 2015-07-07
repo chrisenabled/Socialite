@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:acv="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/artistsChartCV"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    card_view:cardBackgroundColor="#ffffff"
+    android:layout_marginTop="3dp"
+    android:layout_marginEnd="3dp"
+    android:layout_marginRight="3dp"
+    android:layout_marginLeft="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true">
+
+            <at.markushi.ui.CircleButton
+                android:layout_width="64sp"
+                android:layout_height="64sp"
+                android:id="@+id/artistChartFavBorderButton"
+                android:src="@drawable/ic_favorite_border_black"
+                android:layout_gravity="center"
+                app:cb_color="#ffffff"
+                app:cb_pressedRingWidth="8dip" />
+
+            <at.markushi.ui.CircleButton
+                android:layout_width="64sp"
+                android:layout_height="64sp"
+                android:id="@+id/artistChartFavButton"
+                android:src="@drawable/ic_favorite_white"
+                android:layout_gravity="center"
+                app:cb_color="#039be5"
+                app:cb_pressedRingWidth="8dip" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <com.training.android.socialite.ui.customViews.ArtistsChartImageView
+                android:id="@+id/artistChartIV"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="15dp"
+                android:layout_weight="1"
+                acv:circleColor="@color/colorArtistChartImage"
+                acv:circleImage="@drawable/placeholder"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:orientation="vertical"
+                android:paddingBottom="5dp"
+                android:paddingTop="15dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:gravity="bottom">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Artist: "
+                        android:textStyle="bold"
+                        android:id="@+id/artistChartNameLabel"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:id="@+id/artistChartName"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Listeners: "
+                        android:textStyle="bold"
+                        android:id="@+id/artistChartListenersLabel"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/artistChartListeners"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="URL: "
+                        android:textStyle="bold"
+                        android:id="@+id/artistChartUrlLabel"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/artistChartUrl"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rank: "
+                        android:textStyle="bold"
+                        android:id="@+id/artistChartRankLabel"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/artistChartRank"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/artistsChartButtonsLayout">
+
+                    <at.markushi.ui.CircleButton
+                        android:id="@+id/artistChartEventButton"
+                        android:layout_width="76sp"
+                        android:layout_height="76sp"
+                        android:src="@drawable/ic_event_white"
+                        app:cb_color="#99CC00"
+                        app:cb_pressedRingWidth="8dip" />
+
+                    <at.markushi.ui.CircleButton
+                        android:layout_width="76sp"
+                        android:layout_height="76sp"
+                        android:id="@+id/artistChartMusicButton"
+                        android:src="@drawable/ic_queue_music_white"
+                        app:cb_color="#5c6bc0"
+                        app:cb_pressedRingWidth="8dip" />
+
+                    <at.markushi.ui.CircleButton
+                        android:layout_width="76sp"
+                        android:layout_height="76sp"
+                        android:id="@+id/artistChartVideoButton"
+                        android:src="@drawable/ic_videocam_white"
+                        app:cb_color="#ff7043"
+                        app:cb_pressedRingWidth="8dip" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

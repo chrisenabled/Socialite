@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:acv="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/fragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/position"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical|center_horizontal" />
+
+    <com.training.android.socialite.ui.customViews.ArtistsChartImageView
+        android:id="@+id/custView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_margin="5dp"
+        android:elevation="3dp"
+        acv:circleColor="@color/colorArtistChartImage"
+        acv:circleImage="@drawable/placeholder"/>
+</RelativeLayout>
