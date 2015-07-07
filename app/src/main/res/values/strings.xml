@@ -7,6 +7,22 @@
     <string name="title_events">Events</string>
     <string name="title_favorites">Favorites</string>
 
+    <string-array name="navMenuTexts">
+        <item>Artists Chart</item>
+        <item>Videos</item>
+        <item>Songs</item>
+        <item>Events</item>
+        <item>Favorites</item>
+    </string-array>
+
+    <array name="navMenuIcons">
+        <item>@drawable/ic_event_white</item>
+        <item>@drawable/ic_videocam_white</item>
+        <item>@drawable/ic_queue_music_white</item>
+        <item>@drawable/ic_event_white</item>
+        <item>@drawable/ic_favorite_white</item>
+    </array>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 

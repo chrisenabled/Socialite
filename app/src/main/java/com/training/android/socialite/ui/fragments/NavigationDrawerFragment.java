@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.TypedArray;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
@@ -26,10 +27,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.training.android.socialite.R;
+import com.training.android.socialite.ui.HomeActivity;
+import com.training.android.socialite.ui.adapters.NavigationDrawerListViewAdapter;
+import com.training.android.socialite.ui.models.NavigationDrawerMenu;
+
+import java.util.ArrayList;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -63,6 +70,7 @@ public class NavigationDrawerFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
+    private LinearLayout mDrawerContent;
 
     public static int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
@@ -95,8 +103,11 @@ public class NavigationDrawerFragment extends Fragment {
             mFromSavedInstanceState = true;
         }
 
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("get-artist-events"));
+
         // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition, true);
+
     }
 
     @Override
@@ -104,13 +115,17 @@ public class NavigationDrawerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
+        selectItem(mCurrentSelectedPosition, true);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
+        mDrawerContent = (LinearLayout) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
+
+        mDrawerListView = (ListView) mDrawerContent.findViewById(R.id.drawerListView);
 
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -119,22 +134,23 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
 
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter("get-artist-events"));
 
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_artists_chart),
-                        getString(R.string.title_videos),
-                        getString(R.string.title_songs),
-                        getString(R.string.title_events),
-                        getString(R.string.title_favorites),
-                }));
+
+        ArrayList<NavigationDrawerMenu> navigationDrawerMenus = new ArrayList<>();
+        String[] menuTexts = getResources().getStringArray(R.array.navMenuTexts);
+        TypedArray icons = getResources().obtainTypedArray(R.array.navMenuIcons);
+
+        // Add item to adapter
+        for(int i = 0; i < menuTexts.length; i++){
+            NavigationDrawerMenu navigationDrawerMenu = new NavigationDrawerMenu(icons.getResourceId(i, -2),menuTexts[i]);
+            navigationDrawerMenus.add(navigationDrawerMenu);
+        }
+        icons.recycle();
+        NavigationDrawerListViewAdapter navigationDrawerListViewAdapter =
+                new NavigationDrawerListViewAdapter(getActivity(), navigationDrawerMenus);
+        mDrawerListView.setAdapter(navigationDrawerListViewAdapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+        return mDrawerContent;
     }
 
     public boolean isDrawerOpen() {
@@ -217,6 +233,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     public void selectItem(int position, boolean activateItemSelectedCallback) {
         mCurrentSelectedPosition = position;
+
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
         }
@@ -226,6 +243,8 @@ public class NavigationDrawerFragment extends Fragment {
         if (mCallbacks != null && !mFromSavedInstanceState && activateItemSelectedCallback) {
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
+
+        ((HomeActivity) getActivity()).onSectionAttached(position + 1);
 
         mFromSavedInstanceState = false;
     }

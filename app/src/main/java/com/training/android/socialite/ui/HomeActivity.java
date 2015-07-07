@@ -109,7 +109,6 @@ public class HomeActivity extends ActionBarActivity
                     .commit();
 
 
-
     }
 
     public void onSectionAttached(int number) {
