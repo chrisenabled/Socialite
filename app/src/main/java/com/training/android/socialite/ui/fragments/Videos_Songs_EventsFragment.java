@@ -10,12 +10,15 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.training.android.socialite.R;
 import com.training.android.socialite.ui.HomeActivity;
 import com.training.android.socialite.ui.adapters.MainActivityPagerAdapter;
 
 import io.karim.MaterialTabs;
+
+import static android.support.v4.view.ViewPager.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,7 +28,7 @@ import io.karim.MaterialTabs;
  * Use the {@link Videos_Songs_EventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Videos_Songs_EventsFragment extends Fragment {
+public class Videos_Songs_EventsFragment extends Fragment implements OnPageChangeListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     //private static final String ARG_PARAM1 = "param1";
@@ -42,6 +45,10 @@ public class Videos_Songs_EventsFragment extends Fragment {
 
     View mVidMusicLayout;
 
+    int itemToSelect = 0;
+
+    private static NavigationDrawerFragment mNavigationDrawerFragment;
+
 
     // TODO: Rename and change types of parameters
     //private String mParam1;
@@ -57,11 +64,12 @@ public class Videos_Songs_EventsFragment extends Fragment {
      * @return A new instance of fragment Videos_Songs_EventsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static Videos_Songs_EventsFragment newInstance() {
+    public static Videos_Songs_EventsFragment newInstance(NavigationDrawerFragment navigationDrawerFragment) {
         Videos_Songs_EventsFragment fragment = new Videos_Songs_EventsFragment();
         Bundle args = new Bundle();
         //args.putString(ARG_PARAM1, param1);
         //args.putString(ARG_PARAM2, param2);
+        mNavigationDrawerFragment = navigationDrawerFragment;
         fragment.setArguments(args);
         return fragment;
     }
@@ -124,7 +132,22 @@ public class Videos_Songs_EventsFragment extends Fragment {
         mMaterialTabs.setViewPager(mViewPager);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
         mViewPager.setPageMargin(pageMargin);
-        mViewPager.setCurrentItem(0);
+        itemToSelect = NavigationDrawerFragment.mCurrentSelectedPosition - 1;
+        mViewPager.setCurrentItem(itemToSelect);
+        mViewPager.addOnPageChangeListener(this);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        mNavigationDrawerFragment.selectItem(position + 1, false);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
 
     }
 

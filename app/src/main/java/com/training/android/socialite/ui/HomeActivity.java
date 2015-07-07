@@ -99,29 +99,14 @@ public class HomeActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        String type = "";
-        switch (position) {
-            case 0:
-                fragmentManager.beginTransaction()
+        if(position == 0)
+            fragmentManager.beginTransaction()
                     .replace(R.id.container, ArtistsChartRecyclerViewFragment.newInstance(this))
                     .commit();
-                break;
-            case 1:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, Videos_Songs_EventsFragment.newInstance())
-                        .commit();
-                break;
-            case 2:
-                type = "Songs";
-                break;
-            case 3:
-                type = "Events";
-                break;
-            case 4:
-                type = "Favorites";
-                break;
-        }
-
+        if(position > 0 && position <= 3)
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, Videos_Songs_EventsFragment.newInstance(mNavigationDrawerFragment))
+                    .commit();
 
 
 
