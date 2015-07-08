@@ -36,8 +36,6 @@ public class NavigationDrawerListViewAdapter extends ArrayAdapter<NavigationDraw
 
         View rowView = inflater.inflate(R.layout.navigation_drawer_list, parent, false);
 
-        final LinearLayout linearLayout = (LinearLayout) rowView.findViewById(R.id.drawerListLinearLayout);
-
         TextView textView = (TextView) rowView.findViewById(R.id.drawerListViewText);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.drawerListViewImage);
 

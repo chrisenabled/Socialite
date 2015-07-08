@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.training.android.socialite.ui.customLayouts.CheckableLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:gravity="center_vertical"
@@ -24,4 +25,4 @@
         android:textSize="18sp"
         android:padding="5dp"
         android:textColor="#FFFFFF"/>
-</LinearLayout>
+</com.training.android.socialite.ui.customLayouts.CheckableLinearLayout>

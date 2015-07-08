@@ -150,6 +150,14 @@ public class NavigationDrawerFragment extends Fragment {
                 new NavigationDrawerListViewAdapter(getActivity(), navigationDrawerMenus);
         mDrawerListView.setAdapter(navigationDrawerListViewAdapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                selectItem(i, true);
+            }
+
+        });
+
         return mDrawerContent;
     }
 
