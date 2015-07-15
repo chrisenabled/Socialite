@@ -9,13 +9,14 @@ import android.widget.ImageView;
 
 import com.training.android.socialite.R;
 import com.training.android.socialite.ui.fragments.MyFragment;
+import com.training.android.socialite.ui.fragments.VideosFragment;
 
 import io.karim.MaterialTabs;
 
 /**
  * Created by chrisenabled on 7/2/15.
  */
-public class MainActivityPagerAdapter extends FragmentPagerAdapter implements MaterialTabs.CustomTabProvider {
+public class VideoSongEventPagerAdapter extends FragmentPagerAdapter implements MaterialTabs.CustomTabProvider {
 
     private final String[] TITLES = {"Videos", "Songs", "Events"};
 
@@ -24,7 +25,7 @@ public class MainActivityPagerAdapter extends FragmentPagerAdapter implements Ma
 
     private Context mContext;
 
-    public MainActivityPagerAdapter(Fragment fm, Context context) {
+    public VideoSongEventPagerAdapter(Fragment fm, Context context) {
         super(fm.getChildFragmentManager());
         mContext = context;
     }
@@ -41,7 +42,11 @@ public class MainActivityPagerAdapter extends FragmentPagerAdapter implements Ma
 
     @Override
     public Fragment getItem(int position) {
-        return MyFragment.getInstance(position, mContext);
+        if(position == 0){
+            return VideosFragment.newInstance(mContext);
+        }
+        else
+            return MyFragment.getInstance(position, mContext);
     }
 
     @Override

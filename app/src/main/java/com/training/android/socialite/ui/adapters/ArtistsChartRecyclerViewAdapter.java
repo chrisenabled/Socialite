@@ -7,8 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.training.android.socialite.R;
+import com.training.android.socialite.ui.fragments.SavedArtistsChartRVFragment;
 import com.training.android.socialite.ui.models.Artist;
 import com.training.android.socialite.ui.viewHolders.ArtistsChartViewHolder;
 
@@ -22,13 +24,14 @@ public class ArtistsChartRecyclerViewAdapter extends
         RecyclerView.Adapter<ArtistsChartViewHolder> {
 
     public Context mContext;
-    public static List<Artist> mArtists = new ArrayList<>();
     private List<Artist> privateArtists = new ArrayList<>();
+    private boolean isSavedList;
     RecyclerView mRecyclerView;
 
-    public ArtistsChartRecyclerViewAdapter(Context context, RecyclerView rv){
+    public ArtistsChartRecyclerViewAdapter(Context context, RecyclerView rv, String fragmentName){
         mContext = context;
         mRecyclerView = rv;
+        isSavedList = fragmentName.equals(SavedArtistsChartRVFragment.class.getSimpleName());
     }
 
     @Override
@@ -42,6 +45,11 @@ public class ArtistsChartRecyclerViewAdapter extends
     private void updateArtistFav(Long id, int fav){
         Artist artist = Artist.load(Artist.class, id);
         artist.isLiked = fav;
+        if(fav == 1)
+            artist.isFromOnline = 0;
+        else
+            artist.isFromOnline = 1;
+
         artist.save();
     }
 
@@ -53,43 +61,48 @@ public class ArtistsChartRecyclerViewAdapter extends
         holder.mUrl.setText(privateArtists.get(position).mUrl);
         holder.mName.setText(privateArtists.get(position).mName);
         holder.mListeners.setText(privateArtists.get(position).mListeners);
-        holder.mFavButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                view.setVisibility(View.INVISIBLE);
-                mArtists.get(position).isLiked = 0;
-                holder.mFavBorderButton.setVisibility(View.VISIBLE);
-                updateArtistFav(mArtists.get(position).getId(), 0);
-
-            }
-        });
-        holder.mFavBorderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                view.setVisibility(View.INVISIBLE);
-                mArtists.get(position).isLiked = 1;
-                holder.mFavButton.setVisibility(View.VISIBLE);
-                updateArtistFav(mArtists.get(position).getId(), 1);
-            }
-        });
-
         holder.mEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent("get-artist-events");
-                intent.putExtra("mbid", mArtists.get(position).mMbid);
+                intent.putExtra("mbid", privateArtists.get(position).mMbid);
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
             }
         });
 
-
-        if (mArtists.get(position).isLiked == 0){
+        if(isSavedList){
+            holder.mFavBorderButton.setVisibility(View.INVISIBLE);
             holder.mFavButton.setVisibility(View.INVISIBLE);
-            holder.mFavBorderButton.setVisibility(View.VISIBLE);
         }
         else{
-            holder.mFavButton.setVisibility(View.VISIBLE);
-            holder.mFavBorderButton.setVisibility(View.INVISIBLE);
+            holder.mFavButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    view.setVisibility(View.INVISIBLE);
+                    privateArtists.get(position).isLiked = 0;
+                    holder.mFavBorderButton.setVisibility(View.VISIBLE);
+                    updateArtistFav(privateArtists.get(position).getId(), 0);
+
+                }
+            });
+            holder.mFavBorderButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    view.setVisibility(View.INVISIBLE);
+                    privateArtists.get(position).isLiked = 1;
+                    holder.mFavButton.setVisibility(View.VISIBLE);
+                    updateArtistFav(privateArtists.get(position).getId(), 1);
+                }
+            });
+
+            if (privateArtists.get(position).isLiked == 0){
+                holder.mFavButton.setVisibility(View.INVISIBLE);
+                holder.mFavBorderButton.setVisibility(View.VISIBLE);
+            }
+            else{
+                holder.mFavButton.setVisibility(View.VISIBLE);
+                holder.mFavBorderButton.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -102,7 +115,6 @@ public class ArtistsChartRecyclerViewAdapter extends
 
     public void add(int position, Artist artist){
         privateArtists.add(position, artist);
-        mArtists.add(position,artist);
         notifyItemInserted(position);
     }
 

@@ -1,31 +1,39 @@
 package com.training.android.socialite.ui.lastFmUtility;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 
+import com.activeandroid.query.Delete;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.training.android.socialite.ui.HomeActivity;
+import com.training.android.socialite.ui.Utilities.NetworkUtility;
+import com.training.android.socialite.ui.fragments.ArtistsChartRecyclerViewFragment;
+import com.training.android.socialite.ui.models.Artist;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by chrisenabled on 7/4/15.
  */
-public class CountryUtility  {
+public class CountryMetroUtility extends AbstractLastFmUtility {
 
     public String mCountry = "united+states";
     public String mMetro = "atlanta";
-    private Context mContext;
     private Location mLocation;
-    public CountryUtility(Context context, Location location) {
+
+    public CountryMetroUtility(Context context, Location location) {
+        super(context);
         mLocation = location;
         mContext = context;
         resetCountryDetails();
@@ -33,53 +41,49 @@ public class CountryUtility  {
 
 
     private void resetCountryDetails(){
-        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
-        if(mLocation != null){
-            try {
-                List<Address> addresses =
-                        geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1);
-                if(addresses.size() > 0){
-                    Address obj = addresses.get(0);
-                    mCountry = obj.getCountryName().replace(' ', '+');
+        if(NetworkUtility.isNetworkAvailable(mContext)){
+            Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+            if(mLocation != null){
+                try {
+                    List<Address> addresses =
+                            geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1);
+                    if(addresses.size() > 0){
+                        Address obj = addresses.get(0);
+                        mCountry = obj.getCountryName().replace(' ', '+');
 
-                    if(obj.getSubAdminArea() == null){
-                        if(obj.getPostalCode() != null){
-                            mMetro = getAlternateMetro(obj.getPostalCode(), obj.getCountryCode());
+                        if(obj.getSubAdminArea() == null){
+                            if(obj.getPostalCode() != null){
+                                mMetro = getAlternateMetro(obj.getPostalCode(), obj.getCountryCode());
+                            }
+
                         }
+                        else
+                            mMetro = obj.getSubAdminArea().replace(' ','+');
                     }
-                    else
-                        mMetro = obj.getSubAdminArea().replace(' ','+');
-                }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(mCountry == null || mMetro == null){
+                SharedPreferences settings = mContext.getSharedPreferences(
+                        ArtistsChartRecyclerViewFragment.PREFS_NAME, 0);
+                String currentMetro = settings.getString("currentMetro", null);
+                String currentCountry = settings.getString("currentCountry", null);
+
+                mMetro = currentMetro;
+                mCountry = currentCountry;
+
             }
         }
     }
 
     private String getAlternateMetro(String postalCode, String countryCode){
-
         String zipToMetroUri = "http://zip.getziptastic.com/v2/" + countryCode +"/" + postalCode;
-        OkHttpClient client = new OkHttpClient();
-        Response response = null;
         JSONObject jsonObject = null;
-
-        Request request = new Request.Builder()
-                .url(zipToMetroUri)
-                .build();
-
-        try {
-            response = client.newCall(request).execute();
-            jsonObject = new JSONObject(response.body().string());
-            return jsonObject.optString("city").replace(' ','+');
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        return null;
+        jsonObject = _getResult(zipToMetroUri);
+        return jsonObject.optString("city").replace(' ','+');
     }
 
     public String getCountryName(String countryShort){

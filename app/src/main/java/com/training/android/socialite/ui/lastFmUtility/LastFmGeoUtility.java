@@ -1,17 +1,10 @@
 package com.training.android.socialite.ui.lastFmUtility;
 
 import android.content.Context;
-import android.widget.Toast;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.training.android.socialite.ui.models.Artist;
+import com.training.android.socialite.ui.Utilities.NetworkUtility;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 
 /**
@@ -22,8 +15,8 @@ public class LastFmGeoUtility extends AbstractLastFmUtility {
     public static int METRO_ARTISTS_CHART_PAGE_NUM = 1;
     public static int METRO_ARTISTS_CHART_TOTAL_PAGES = 0;
 
-    public LastFmGeoUtility(Context context, CountryUtility countryUtility) {
-        super(context, countryUtility);
+    public LastFmGeoUtility(Context context, CountryMetroUtility countryMetroUtility) {
+        super(context, countryMetroUtility);
     }
 
     public JSONObject getMetroArtistsChart(){
@@ -31,13 +24,13 @@ public class LastFmGeoUtility extends AbstractLastFmUtility {
         JSONObject metroArtistsChartJson = new JSONObject();
 
         String method = "geo.getmetroartistchart";
-        String country = "&country="+mCountryUtility.mCountry;
-        String metro = "&metro="+mCountryUtility.mMetro;
+        String country = "&country="+ mCountryMetroUtility.mCountry;
+        String metro = "&metro="+ mCountryMetroUtility.mMetro;
         String pageNum = "&page="+METRO_ARTISTS_CHART_PAGE_NUM;
         String metroArtistChartUri = ROOT_URI + method + country + pageNum +
                 metro + ITEM_COUNT + API_KEY + FORMAT;
 
-        if (isNetworkAvailable()){
+        if (NetworkUtility.isNetworkAvailable(mContext)){
 
             metroArtistsChartJson =  _getResult(metroArtistChartUri);
             if(metroArtistsChartJson.optJSONObject("topartists") != null) {
@@ -54,29 +47,4 @@ public class LastFmGeoUtility extends AbstractLastFmUtility {
 
         return metroArtistsChartJson;
     }
-
-
-    private JSONObject _getResult(String url){
-
-        OkHttpClient client = new OkHttpClient();
-        Response response;
-        JSONObject jsonObject = null;
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        try {
-            response = client.newCall(request).execute();
-            jsonObject = new JSONObject(response.body().string());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return jsonObject;
-    }
-
 }

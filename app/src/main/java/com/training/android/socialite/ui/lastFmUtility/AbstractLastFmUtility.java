@@ -4,7 +4,14 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.training.android.socialite.ui.HomeActivity;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 
 /**
@@ -18,25 +25,39 @@ public abstract class AbstractLastFmUtility {
     final static String FORMAT = "&format=json";
     final static String ITEM_COUNT = "&limit=20";
 
-    CountryUtility mCountryUtility;
+    CountryMetroUtility mCountryMetroUtility;
     Context mContext;
 
-    public AbstractLastFmUtility(Context context, CountryUtility countryUtility){
+    public AbstractLastFmUtility(Context context, CountryMetroUtility countryMetroUtility){
         mContext = context;
-        mCountryUtility = countryUtility;
-    }
-
-    boolean isNetworkAvailable(){
-
-        ConnectivityManager connMgr = (ConnectivityManager)
-                mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-
+        mCountryMetroUtility = countryMetroUtility;
     }
 
     public AbstractLastFmUtility(Context context){
         mContext = context;
+    }
+
+    JSONObject _getResult(String url){
+
+        OkHttpClient client = new OkHttpClient();
+        Response response;
+        JSONObject jsonObject = null;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        try {
+            response = client.newCall(request).execute();
+            jsonObject = new JSONObject(response.body().string());
+
+        } catch (IOException e) {
+            e.getMessage();
+        } catch (JSONException e) {
+            e.getMessage();
+        }
+
+        return jsonObject;
     }
 
 }

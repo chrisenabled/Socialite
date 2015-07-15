@@ -2,10 +2,12 @@ package com.training.android.socialite.ui.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,13 +18,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.training.android.socialite.R;
+import com.training.android.socialite.ui.Utilities.NetworkUtility;
 import com.training.android.socialite.ui.adapters.ArtistsChartRecyclerViewAdapter;
-import com.training.android.socialite.ui.lastFmUtility.CountryUtility;
+import com.training.android.socialite.ui.lastFmUtility.CountryMetroUtility;
 import com.training.android.socialite.ui.lastFmUtility.LastFmGeoUtility;
 import com.training.android.socialite.ui.models.Artist;
 
@@ -49,6 +53,7 @@ public class ArtistsChartRecyclerViewFragment extends Fragment implements
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -67,8 +72,9 @@ public class ArtistsChartRecyclerViewFragment extends Fragment implements
     private GoogleApiClient mGoogleApiClient;
     public static Location mLastLocation;
 
-    private static boolean isRecreated = false;
-
+    public static final String PREFS_NAME = "Socialite";
+    SharedPreferences settings;
+    List<Artist> artistsInDatabase = new ArrayList<>();
 
 
     /**
@@ -104,54 +110,60 @@ public class ArtistsChartRecyclerViewFragment extends Fragment implements
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_artists_chart_recycler_view, container, false);
 
+        settings = mContext.getSharedPreferences(PREFS_NAME, 0);
         mArtistsChartRV = (RecyclerView) rootView.findViewById(R.id.artistsChartRV);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mArtistsChartRV.setLayoutManager(mLayoutManager);
-        mArtistsChartRecyclerViewAdapter = new ArtistsChartRecyclerViewAdapter(getActivity(), mArtistsChartRV);
+        mArtistsChartRecyclerViewAdapter = new ArtistsChartRecyclerViewAdapter(getActivity(),
+                mArtistsChartRV, ArtistsChartRecyclerViewFragment.class.getSimpleName());
         mArtistsChartRV.setAdapter(mArtistsChartRecyclerViewAdapter);
         empty = (TextView) rootView.findViewById(R.id.empty);
         artistsChartProgressBar = (ProgressBar) rootView.findViewById(R.id.ArtistsChartProgressBar);
         artistsChartProgressBar.setVisibility(View.INVISIBLE);
-        List<Artist> artists;
-        artists = getAllArtists();
-
-        populateRecyclerView(artists);
+        artistsInDatabase = getAllArtists();
+        if(savedInstanceState != null){
+            restoreRecyclerViewState();
+        }
+        //else if(!isDueTime() && artistsInDatabase.size() >= 15){
+        //    reloadRecyclerView();
+       // }
+        else
+            buildGoogleApiClient();
 
         return rootView;
     }
 
-    public void populateRecyclerView(List<Artist> artists){
-        if (isRecreated && mArtists.size() > 0){
-            isRecreated = false;
-
-            Toast.makeText(getActivity(), "Recreated", Toast.LENGTH_LONG).show();
-            ArtistsChartRecyclerViewAdapter.mArtists = new ArrayList<>();
-            List<Artist> newArtistsList = new ArrayList<>();
-            for(Artist artist : mArtists){
-                newArtistsList.add(artist);
-                mArtistsChartRecyclerViewAdapter.add(newArtistsList.size() - 1, artist);
-            }
+    public void restoreRecyclerViewState(){
+        Toast.makeText(getActivity(), "Recreated", Toast.LENGTH_LONG).show();
+        List<Artist> newArtistsList = new ArrayList<>();
+        for(Artist artist : mArtists){
+            newArtistsList.add(artist);
+            mArtistsChartRecyclerViewAdapter.add(newArtistsList.size() - 1, artist);
         }
-        else{
-            if(artists.size() > 0){
-                empty.setVisibility(View.INVISIBLE);
-                mArtists = new ArrayList<>();
-                for(Artist artist : artists){
-                    mArtists.add(artist);
-                    mArtistsChartRecyclerViewAdapter.add(mArtists.size() - 1, artist);
+    }
 
-                }
-                Toast.makeText(getActivity(), "Result from Database", Toast.LENGTH_LONG).show();
-            }
-            else
-                buildGoogleApiClient();
+    public void reloadRecyclerView(){
+
+        List<Artist> artists = new Select()
+                .from(Artist.class)
+                .where("isFromOnline = ?", 1)
+                .execute();
+        empty.setVisibility(View.INVISIBLE);
+        mArtists = new ArrayList<>();
+        for(Artist artist : artists){
+            mArtists.add(artist);
+            mArtistsChartRecyclerViewAdapter.add(mArtists.size() - 1, artist);
+
         }
+        Toast.makeText(getActivity(), "Result from Database", Toast.LENGTH_LONG).show();
+
     }
 
     public static List<Artist> getAllArtists() {
         // This is how you execute a query
         return new Select()
                 .from(Artist.class)
+                .where("isFromOnline = ?", 1)
                 .execute();
     }
 
@@ -202,20 +214,24 @@ public class ArtistsChartRecyclerViewFragment extends Fragment implements
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 
-        new GetArtistsChartAsync().execute(mContext);
+       if( NetworkUtility.isNetworkAvailable(mContext))
+            new GetArtistsChartAsync().execute();
+        else
+           empty.setText("Could not connect to the internet, please check your network settings");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
 
-        Toast.makeText(getActivity(),"connection suspended", Toast.LENGTH_LONG).show();
 
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
-        Toast.makeText(getActivity(), "connection lost", Toast.LENGTH_LONG).show();
+        if(artistsInDatabase.size() > 0)
+            reloadRecyclerView();
+        else
+            empty.setText("Could not connect to the internet, please check your network settings");
 
     }
     //------------------------------------------------------------------------------
@@ -233,52 +249,50 @@ public class ArtistsChartRecyclerViewFragment extends Fragment implements
 
 
     //=======Class to Get Artists Chart from REST API asynchronously===================
-    public class GetArtistsChartAsync extends AsyncTask<Context, Void, ArrayList<Artist>> {
+    public class GetArtistsChartAsync extends AsyncTask<String, Void, ArrayList<Artist>> {
 
-        CountryUtility countryUtility;
-        Context mContext;
-        LastFmGeoUtility mLastFmGeoUtility;
+        CountryMetroUtility countryMetroUtility;
+
         @Override
-        protected ArrayList<Artist> doInBackground(Context... params) {
+        protected ArrayList<Artist> doInBackground(String... params) {
 
+            String currentMetro = settings.getString("currentMetro", null);
+            String currentCountry = settings.getString("currentCountry", null);
+            SharedPreferences.Editor editor = settings.edit();
+            countryMetroUtility = new CountryMetroUtility(mContext, mLastLocation);
 
-            JSONObject metroArtists;
-            JSONObject topArtists;
-            JSONArray artists;
-
-            List<Artist> artistsList = new ArrayList<>();
-            mContext= params[0];
-            countryUtility = new CountryUtility(mContext, mLastLocation);
-            mLastFmGeoUtility  = new LastFmGeoUtility(mContext, countryUtility);
-            try {
-                metroArtists = mLastFmGeoUtility.getMetroArtistsChart();
-                topArtists = metroArtists.getJSONObject("topartists");
-                artists = topArtists.getJSONArray("artist");
-                for(int i = 0; i < artists.length(); i++){
-                    Artist artist;
-
-                    JSONObject artistObj = artists.getJSONObject(i);
-                    artist = new Artist(artistObj);
-                    artistsList.add(artist);
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if(currentMetro == null || !currentMetro.equals(countryMetroUtility.mMetro) ||
+                    currentCountry == null || !currentCountry.equals(countryMetroUtility.mCountry)){
+                editor.putString("currentMetro", countryMetroUtility.mMetro);
+                editor.putString("currentCountry", countryMetroUtility.mCountry);
+                editor.apply();
+                new Delete().from(Artist.class).execute();
+                return (ArrayList<Artist>) getArtistsChartOnline(countryMetroUtility, mContext);
             }
-            return (ArrayList<Artist>) artistsList;
+            else {
+                return null;
+
+            }
+
 
         }
 
         @Override
         protected void onPostExecute(ArrayList<Artist> artists) {
+            Toast.makeText(mContext, SystemClock.elapsedRealtime()+"",Toast.LENGTH_LONG).show();
 
-            if(artists.isEmpty()){
+            if(artists == null){
+                if(artistsInDatabase.size() > 0)
+                reloadRecyclerView();
+            }
+
+            else if(artists.isEmpty()){
                 empty.setText("Could not find artists");
             }
             else {
 
                 empty.setVisibility(View.INVISIBLE);
-                ArtistsChartRecyclerViewAdapter.mArtists = new ArrayList<>();
+                mArtists = new ArrayList<>();
                 for(Artist artist : artists){
                     Artist dbArtist = new Select()
                             .from(Artist.class)
@@ -290,6 +304,7 @@ public class ArtistsChartRecyclerViewFragment extends Fragment implements
                     mArtistsChartRecyclerViewAdapter.add(mArtists.size() - 1, artist);
 
                     if(dbArtist == null)
+                        artist.isFromOnline = 1;
                         artist.save();
                 }
 
@@ -300,8 +315,58 @@ public class ArtistsChartRecyclerViewFragment extends Fragment implements
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        isRecreated = true;
         super.onSaveInstanceState(outState);
     }
+
+    public List<Artist> getArtistsChartOnline(CountryMetroUtility mCountryMetroUtility, Context mContext){
+
+        JSONObject metroArtists;
+        JSONObject topArtists;
+        JSONArray artists;
+        LastFmGeoUtility mLastFmGeoUtility;
+        List<Artist> artistsList = new ArrayList<>();
+
+        mLastFmGeoUtility  = new LastFmGeoUtility(mContext, mCountryMetroUtility);
+        try {
+            metroArtists = mLastFmGeoUtility.getMetroArtistsChart();
+            topArtists = metroArtists.getJSONObject("topartists");
+            artists = topArtists.getJSONArray("artist");
+            for(int i = 0; i < artists.length(); i++){
+                Artist artist;
+
+                JSONObject artistObj = artists.getJSONObject(i);
+                artist = new Artist(artistObj);
+                artistsList.add(artist);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return artistsList;
+
+    }
+
+    public boolean isDueTime(){
+
+        long savedTime = settings.getLong("savedTime", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        if(savedTime == 0){
+            editor.putLong("savedTime", System.currentTimeMillis());
+            editor.apply();
+            return  true;
+        }
+        else {
+            double elapsedTime = (System.currentTimeMillis() - savedTime) * 0.000000277778;
+            if(elapsedTime >= 5){
+                editor.putLong("savedTime", System.currentTimeMillis());
+                editor.apply();
+                return true;
+            }
+            else
+                return false;
+
+        }
+    }
+
 
 }

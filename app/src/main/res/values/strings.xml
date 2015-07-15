@@ -6,6 +6,7 @@
     <string name="title_songs">Songs</string>
     <string name="title_events">Events</string>
     <string name="title_favorites">Favorites</string>
+    <string name="title_bookmarks">Bookmarks</string>
 
     <string-array name="navMenuTexts">
         <item>Artists Chart</item>
@@ -13,14 +14,16 @@
         <item>Songs</item>
         <item>Events</item>
         <item>Favorites</item>
+        <item>Bookmarks</item>
     </string-array>
 
     <array name="navMenuIcons">
-        <item>@drawable/ic_event_white</item>
+        <item>@drawable/ic_person_white</item>
         <item>@drawable/ic_videocam_white</item>
         <item>@drawable/ic_queue_music_white</item>
         <item>@drawable/ic_event_white</item>
         <item>@drawable/ic_favorite_white</item>
+        <item>@drawable/ic_bookmark_white</item>
     </array>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -32,5 +35,10 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="metroArtistLookUp">Looking up artist in your locale...</string>
+    <string name="metroArtistLookUp">Looking up artists in your locale &#8230;</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="emptyFavoriteText">No favorites saved</string>
+    <string name="events_lookup">Looking up events in your locale</string>
 </resources>

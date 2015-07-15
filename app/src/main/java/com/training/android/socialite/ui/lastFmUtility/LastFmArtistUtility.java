@@ -5,6 +5,7 @@ import android.content.Context;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.training.android.socialite.ui.Utilities.NetworkUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +34,7 @@ public class LastFmArtistUtility extends AbstractLastFmUtility {
         String pageNum = "&page="+ ARTIST_EVENTS_PAGE_NUM;
         String artistEventsUri = ROOT_URI + method + artistMbid + pageNum + ITEM_COUNT + API_KEY + FORMAT;
 
-        if (isNetworkAvailable()){
+        if (NetworkUtility.isNetworkAvailable(mContext)){
 
             artistEventsJson =  _getResult(artistEventsUri);
             if(artistEventsJson.optJSONObject("events") != null) {
@@ -52,26 +53,5 @@ public class LastFmArtistUtility extends AbstractLastFmUtility {
     }
 
 
-    private JSONObject _getResult(String url){
 
-        OkHttpClient client = new OkHttpClient();
-        Response response;
-        JSONObject jsonObject = null;
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        try {
-            response = client.newCall(request).execute();
-            jsonObject = new JSONObject(response.body().string());
-
-        } catch (IOException e) {
-            e.getMessage();
-        } catch (JSONException e) {
-            e.getMessage();
-        }
-
-        return jsonObject;
-    }
 }

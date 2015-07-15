@@ -28,6 +28,8 @@ public class Artist extends Model{
     public String mImageUrl;
     @Column(name="isLiked")
     public int isLiked = 0;
+    @Column(name = "isFromOnline")
+    public int isFromOnline = 0;
 
 
     public Artist(){super();}

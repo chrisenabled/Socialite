@@ -19,7 +19,10 @@ import android.widget.Toast;
 
 import com.training.android.socialite.R;
 import com.training.android.socialite.ui.fragments.ArtistsChartRecyclerViewFragment;
+import com.training.android.socialite.ui.fragments.ArtistsChart_fav_bookmarkFragment;
 import com.training.android.socialite.ui.fragments.NavigationDrawerFragment;
+import com.training.android.socialite.ui.fragments.SavedArtistsChartRVFragment;
+import com.training.android.socialite.ui.fragments.VideosFragment;
 import com.training.android.socialite.ui.fragments.Videos_Songs_EventsFragment;
 
 import butterknife.Bind;
@@ -28,7 +31,10 @@ import butterknife.ButterKnife;
 
 public class HomeActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-    Videos_Songs_EventsFragment.OnFragmentInteractionListener, ArtistsChartRecyclerViewFragment.OnFragmentInteractionListener{
+    Videos_Songs_EventsFragment.OnFragmentInteractionListener,
+        ArtistsChart_fav_bookmarkFragment.OnFragmentInteractionListener,
+ArtistsChartRecyclerViewFragment.OnFragmentInteractionListener, SavedArtistsChartRVFragment.OnFragmentInteractionListener,
+        VideosFragment.OnFragmentInteractionListener{
 
     @Bind(R.id.toolbar)
     public Toolbar mToolbar;
@@ -99,15 +105,14 @@ public class HomeActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        if(position == 0)
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, ArtistsChartRecyclerViewFragment.newInstance(this))
-                    .commit();
         if(position > 0 && position <= 3)
             fragmentManager.beginTransaction()
                     .replace(R.id.container, Videos_Songs_EventsFragment.newInstance(mNavigationDrawerFragment))
                     .commit();
-
+        else
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, ArtistsChart_fav_bookmarkFragment.newInstance(mNavigationDrawerFragment))
+                    .commit();
 
     }
 
@@ -127,6 +132,9 @@ public class HomeActivity extends ActionBarActivity
                 break;
             case 5:
                 mTitle = getString(R.string.title_favorites);
+                break;
+            case 6:
+                mTitle = getString(R.string.title_bookmarks);
                 break;
         }
 
