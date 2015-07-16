@@ -3,12 +3,15 @@ package com.training.android.socialite.ui.adapters;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.training.android.socialite.R;
+import com.training.android.socialite.ui.fragments.EventsRecyclerViewFragment;
 import com.training.android.socialite.ui.fragments.MyFragment;
+import com.training.android.socialite.ui.fragments.TracksRecyclerViewFragment;
 import com.training.android.socialite.ui.fragments.VideosFragment;
 
 import io.karim.MaterialTabs;
@@ -16,7 +19,7 @@ import io.karim.MaterialTabs;
 /**
  * Created by chrisenabled on 7/2/15.
  */
-public class VideoSongEventPagerAdapter extends FragmentPagerAdapter implements MaterialTabs.CustomTabProvider {
+public class VideoSongEventPagerAdapter extends FragmentStatePagerAdapter implements MaterialTabs.CustomTabProvider {
 
     private final String[] TITLES = {"Videos", "Songs", "Events"};
 
@@ -45,8 +48,11 @@ public class VideoSongEventPagerAdapter extends FragmentPagerAdapter implements 
         if(position == 0){
             return VideosFragment.newInstance(mContext);
         }
+        if(position == 2){
+            return EventsRecyclerViewFragment.newInstance(mContext);
+        }
         else
-            return MyFragment.getInstance(position, mContext);
+            return TracksRecyclerViewFragment.newInstance(mContext);
     }
 
     @Override

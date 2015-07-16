@@ -5,31 +5,144 @@
     android:id="@+id/cv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    card_view:cardBackgroundColor="#ffffff"
+    card_view:cardBackgroundColor="#660066"
     android:layout_marginTop="3dp"
     android:layout_marginEnd="3dp"
     android:layout_marginRight="3dp"
     android:layout_marginLeft="3dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/event_poster"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:padding="5dp"/>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:padding="5dp">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/eventTitleTextView"
+                android:gravity="center_horizontal"
+                android:textColor="#ffffff"
+                android:textSize="25sp"
+                android:layout_marginTop="20dp"/>
+
+            <ImageView
+                android:id="@+id/event_poster"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:padding="5dp"
+                android:background="#fff"/>
 
         </LinearLayout>
 
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventVenueLabel"
+                    android:textColor="#ffffff"
+                    android:text="Venue: "
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventVenueTextView"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/eventAddressLabel"
+                android:textColor="#ffffff"
+                android:text="Address: "
+                android:textStyle="bold"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/eventAddressTextView"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:textSize="18dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventDateLabel"
+                    android:textColor="#ffffff"
+                    android:text="Start Date: "
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventDateTextView"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventUrlLabel"
+                    android:textColor="#ffffff"
+                    android:text="Website: "
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventUrlTextView"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -20,8 +20,10 @@ import android.widget.Toast;
 import com.training.android.socialite.R;
 import com.training.android.socialite.ui.fragments.ArtistsChartRecyclerViewFragment;
 import com.training.android.socialite.ui.fragments.ArtistsChart_fav_bookmarkFragment;
+import com.training.android.socialite.ui.fragments.EventsRecyclerViewFragment;
 import com.training.android.socialite.ui.fragments.NavigationDrawerFragment;
 import com.training.android.socialite.ui.fragments.SavedArtistsChartRVFragment;
+import com.training.android.socialite.ui.fragments.TracksRecyclerViewFragment;
 import com.training.android.socialite.ui.fragments.VideosFragment;
 import com.training.android.socialite.ui.fragments.Videos_Songs_EventsFragment;
 
@@ -34,7 +36,8 @@ public class HomeActivity extends ActionBarActivity
     Videos_Songs_EventsFragment.OnFragmentInteractionListener,
         ArtistsChart_fav_bookmarkFragment.OnFragmentInteractionListener,
 ArtistsChartRecyclerViewFragment.OnFragmentInteractionListener, SavedArtistsChartRVFragment.OnFragmentInteractionListener,
-        VideosFragment.OnFragmentInteractionListener{
+        VideosFragment.OnFragmentInteractionListener, EventsRecyclerViewFragment.OnFragmentInteractionListener,
+        TracksRecyclerViewFragment.OnFragmentInteractionListener{
 
     @Bind(R.id.toolbar)
     public Toolbar mToolbar;

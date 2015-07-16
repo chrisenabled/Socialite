@@ -30,7 +30,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsViewHo
     @Override
     public EventsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_artists_chart_card_view, parent, false);
+                .inflate(R.layout.events_lists_card_view, parent, false);
         EventsViewHolder eventsViewHolder = new EventsViewHolder(v, this);
         return eventsViewHolder;
     }
@@ -38,6 +38,11 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsViewHo
     @Override
     public void onBindViewHolder(EventsViewHolder holder, int position) {
 
+        holder.eventTitle.setText(events.get(position).mTitle);
+        holder.eventVenue.setText(events.get(position).mVenueName);
+        holder.eventAddress.setText(events.get(position).mAddress);
+        holder.eventDate.setText(events.get(position).mStartDate);
+        holder.eventUrl.setText(events.get(position).mUrl);
         Picasso.with(mContext)
                 .load(events.get(position).mImageUrl)
                 .placeholder(R.drawable.placeholder)
